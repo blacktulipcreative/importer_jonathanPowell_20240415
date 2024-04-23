@@ -1,0 +1,103 @@
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+<!-- * * * * * * * * * * * The content below * * * * * * * * * * * -->
+<!-- * * * * * * * * * * is only a placeholder * * * * * * * * * * -->
+<!-- * * * * * * * * * * and can be replaced.  * * * * * * * * * * -->
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+<!-- * * * * * * * * * Delete the template below * * * * * * * * * -->
+<!-- * * * * * * * to get started with your project! * * * * * * * -->
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+
+
+<main class="main">
+  <input type="file" class="file-input" (change)="onFileSelected($event)" #fileUpload>
+  <div class="file-upload">
+
+    {{ fileName || "No file uploaded yet" }}
+
+    <button 
+      mat-mini-fab 
+      color="primary" 
+      class="upload-btn"
+      (click)="fileUpload.click()">
+        <mat-icon>attach_file</mat-icon>
+    </button>
+
+    <br />
+    <form (ngSubmit)="onSubmit()">
+      <input 
+        id="filter_input"
+        type="text"
+        [(ngModel)]="filterInput"
+        name="filterInput"
+      >
+      <button class="button" type="submit">Filter</button>
+    </form>
+
+    <div *ngIf="dataSource">
+        <mat-table [dataSource]="dataSource.people" matSort matSortDisableClear (matSortChange)="onSortChange($event)">
+            <ng-container matColumnDef="first_name">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>First Name</mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.first_name}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="last_name">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Last Name</mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.last_name}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="locations">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Locations</mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.locations}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="gender">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Gender</mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.gender}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="affiliations">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Affiliations</mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.affiliations}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="weapon">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Weapon</mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.weapon}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="vehicle">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Vehicle</mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.vehicle}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="species">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Species</mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.species}}</mat-cell>
+            </ng-container>
+
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+        <mat-paginator [length]="20"
+                    [pageSize]="10"
+                    [pageSizeOptions]="pageSizeOptions"
+                    (page)="onPaginationChange($event)">
+        </mat-paginator>
+    </div>
+      
+
+      
+    </div>
+
+</main>
+
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+<!-- * * * * * * * * * * * The content above * * * * * * * * * * * * -->
+<!-- * * * * * * * * * * is only a placeholder * * * * * * * * * * * -->
+<!-- * * * * * * * * * * and can be replaced.  * * * * * * * * * * * -->
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+<!-- * * * * * * * * * * End of Placeholder  * * * * * * * * * * * * -->
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+
+
