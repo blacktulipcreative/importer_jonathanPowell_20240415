@@ -6,12 +6,13 @@ This is code for a CSV Importer. The CSV file can be found in:
 /db
 
 ```
+To view/delete records using the backend, you can do this using the rails console and then running your function in there (e.g. Person.destroy_all)
 
 All front end and backend code can be found in the same git repository.
 
-The following files have code in them:
+## The following files have code in them:
 
-Backend:
+### Backend:
 
 ```
 app/models: person, affiliation, location
@@ -21,7 +22,7 @@ specs/models
 config/routes
 Gemfile/Gemfile.lock
 ```
-Frontend:
+### Frontend:
 
 ```
 ./importer-fe/src:
