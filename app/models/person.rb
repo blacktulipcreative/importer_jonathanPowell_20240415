@@ -9,17 +9,25 @@ class Person < ApplicationRecord
     #validations
 
     validates :first_name, :presence => true
-    validates :species, :presence => true#, inclusion: {in: species.values}
-    validates :gender, :presence => true#, inclusion: {in: gender.values}
+    validates :species, :presence => true #, inclusion: {in: species.values}
+    validates :gender, :presence => true #, inclusion: {in: gender.values}
+    validates_associated :affiliations
+    validates_each :first_name, :last_name do |record, attr, value|
+        record.errors.add(attr, 'must start with an uppercase letter') if /\A[[:lower]]/.match?(value)
+    end
 
     before_validation :update_gender
     before_save :generate_uuid
 
+
+    # format gender to be consistent - Male or Female (or Other)
     def update_gender
-        if self.gender.upcase == 'M'
+        if self.gender.present?
+          if self.gender.upcase == 'M'
             self.gender = "Male"
-        elsif self.gender.upcase == 'F'
+          elsif self.gender.upcase == 'F'
             self.gender = "Female"
+          end
         end
     end
 

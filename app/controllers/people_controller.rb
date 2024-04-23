@@ -31,19 +31,53 @@ class PeopleController < ApplicationController
       people_array.push({"first_name" => person.first_name, "last_name" => person.last_name || "", "species" => person.species, "gender" => person.gender, "weapon" => person.weapon || "", "vehicle" => person.vehicle || "", 
       "affiliations" => person.convert_association_to_string("affiliation"), "locations" => person.convert_association_to_string("location")})
     end
-    #sort the records
-    people_array = eval("people_array.sort_by{|data| data['#{params[:sort_column]}']}") if params[:sort_direction] == 'asc'
-    people_array = eval("people_array.sort_by{|data| data['#{params[:sort_column]}']}.reverse") if params[:sort_direction] == 'desc'
-    #pagination
-    if (is_integer(params[:limit]) and is_integer(params[:offset]))
-      limit = params[:limit].to_i
-      offset = limit * params[:offset].to_i
-      people_array = people_array[offset, limit]
-    end    
+    if people_array.present?
+      #sort the records
+      people_array = eval("people_array.sort_by{|data| data['#{params[:sort_column]}']}") if params[:sort_direction] == 'asc'
+      people_array = eval("people_array.sort_by{|data| data['#{params[:sort_column]}']}.reverse") if params[:sort_direction] == 'desc'
+      #pagination
+      if (is_integer(params[:limit]) and is_integer(params[:offset]))
+        limit = params[:limit].to_i
+        offset = limit * params[:offset].to_i
+        people_array = people_array[offset, limit]
+      end
+    else
+      raise "No people records found"
+    end  
     render json: {"people" => people_array}
   end
 
-  # # GET /people/1
+  def import_person_csv
+    require 'csv'
+    uploaded_csv_file = File.open(params[:file])
+    if uploaded_csv_file.present?
+      CSV.parse(uploaded_csv_file, :headers => true, :quote_char => '"') do |csv_row|
+
+        # If affiliation is present, import the row. If it isn't, continue without adding in
+        if csv_row["Affiliations"].present?
+
+          #titlize the name
+          person_name = csv_row["Name"].to_s.titleize
+
+          #split the name into first and last names
+          split_name = person_name.split(' ', 2)
+          first_name = split_name[0]
+          (split_name.length > 1) ? last_name =split_name[1] : last_name = nil
+
+          #create the new person
+          new_person = Person.create!({first_name: first_name, last_name: last_name, species: csv_row["Species"], gender: csv_row["Gender"], weapon: csv_row["Weapon"], vehicle: csv_row["Vehicle"]})
+          if new_person.save
+            new_person.create_new_association('affiliation', csv_row)
+            new_person.create_new_association('location', csv_row)           
+          end
+        end
+      end
+    else
+      raise 'CSV file not found.'
+    end
+  end
+
+    # # GET /people/1
   # def show
   #   render json: @person
   # end
@@ -73,52 +107,11 @@ class PeopleController < ApplicationController
   #   @person.destroy
   # end
 
-  def import_person_csv
-    require 'csv'
-    uploaded_csv_file = File.open(params[:file])
-    if uploaded_csv_file.present?
-      CSV.parse(uploaded_csv_file, :headers => true, :quote_char => '"') do |csv_row|
-
-        # If affiliation is present, import the row. If it isn't, continue without adding in
-        if csv_row["Affiliations"].present?
-
-          #titlize the name
-          person_name = csv_row["Name"].to_s.titleize
-
-          #split the name into first and last names
-          split_name = person_name.split(' ', 2)
-          first_name = split_name[0]
-          (split_name.length > 1) ? last_name =split_name[1] : last_name = nil
-
-          #create the new person
-          new_person = Person.create!({first_name: first_name, last_name: last_name, species: csv_row["Species"], gender: csv_row["Gender"], weapon: csv_row["Weapon"], vehicle: csv_row["Vehicle"]})
-          if new_person.save
-            new_person.create_new_association('affiliation', csv_row)
-            new_person.create_new_association('location', csv_row)
-            
-            # affiliation_values = row["Affiliations"].split(',')
-            # affiliation_values.each do |affiliation_value|
-            #   new_person.affiliations.create!({"affiliation_name" => affiliation_value.titleize})
-            # end
-            # location_values = row["Location"].split(',')
-            # location_values.each do |location_value|
-            #   new_person.locations.create!({"location_name" => location_value.titleize})
-            # end            
-          end
-        end
-      end
-    else
-      raise 'CSV file not found.'
-    end
-  end
-
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_person
       @person = Person.find(params[:id])
     end
-
-    
 
     # Only allow a list of trusted parameters through.
     def person_params

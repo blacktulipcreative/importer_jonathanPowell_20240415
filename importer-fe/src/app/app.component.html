@@ -9,7 +9,8 @@
 
 
 <main class="main">
-  <input type="file" class="file-input" (change)="onFileSelected($event)" #fileUpload>
+  <label for="file-input"><b>Upload File</b></label><br>
+  <input type="file" id="file-input" class="file-input" (change)="onFileSelected($event)" #fileUpload>
   <div class="file-upload">
 
     {{ fileName || "No file uploaded yet" }}
@@ -21,9 +22,12 @@
       (click)="fileUpload.click()">
         <mat-icon>attach_file</mat-icon>
     </button>
+  </div>
+  <div>
 
     <br />
     <form (ngSubmit)="onSubmit()">
+      <label for="filter_input"><b>Filter Results</b></label><br>
       <input 
         id="filter_input"
         type="text"
@@ -32,6 +36,8 @@
       >
       <button class="button" type="submit">Filter</button>
     </form>
+  </div>
+  <br />
 
     <div *ngIf="dataSource">
         <mat-table [dataSource]="dataSource.people" matSort matSortDisableClear (matSortChange)="onSortChange($event)">
@@ -84,10 +90,6 @@
                     [pageSizeOptions]="pageSizeOptions"
                     (page)="onPaginationChange($event)">
         </mat-paginator>
-    </div>
-      
-
-      
     </div>
 
 </main>

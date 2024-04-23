@@ -51,6 +51,7 @@ export class AppComponent  implements OnInit {
 
       const upload$ = this.http.post("http://localhost:3000/people/import_person_csv", formData);
       upload$.subscribe();
+      location.reload(); 
     }
   }
 

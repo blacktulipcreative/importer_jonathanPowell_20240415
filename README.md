@@ -9,6 +9,30 @@ This is code for a CSV Importer. The CSV file can be found in:
 
 All front end and backend code can be found in the same git repository.
 
+The following files have code in them:
+
+Backend:
+
+```
+app/models: person, affiliation, location
+app/controllers: people_controller, affiliations_controller, locations_controller, applications_controller
+db/migrate
+specs/models
+config/routes
+Gemfile/Gemfile.lock
+```
+Frontend:
+
+```
+./importer-fe/src:
+
+./app/models
+./app/app.components.html
+./app/app.component.ts
+./app/app.module.ts
+./app/people.service.ts
+```
+
 ## Backend
 
 ### Database
@@ -119,3 +143,11 @@ To filter the data:
 ```
 
 ## Testing
+
+Testing is run using the RSPEC. The test files can be found in "./spec/models"
+
+Run:
+
+```
+bundle rspec exec
+```
